@@ -13,7 +13,7 @@ export default function RootLayout({
         </header>
         <main>{children}</main>
         <footer>
-          <p>&copy; 2025/1/1</p>
+          <p>&copy; Hibiki Hangai</p>
         </footer>
       </body>
     </html>

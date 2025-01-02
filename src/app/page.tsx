@@ -52,8 +52,12 @@ export default function Home() {
       </Link>
       <ul className="mt-4">
         <div className="flex items-center justify-between  mx-auto">
-          <p>タスク名</p>
-          <p>ステータス</p>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            タスク名
+          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            ステータス
+          </label>
         </div>
         {tasks.map((task: Task) => (
           <li
