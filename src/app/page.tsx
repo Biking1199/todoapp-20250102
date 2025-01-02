@@ -51,26 +51,22 @@ export default function Home() {
         新規タスク作成
       </Link>
       <ul className="mt-4">
+        <div className="flex items-center justify-between  mx-auto">
+          <p>タスク名</p>
+          <p>ステータス</p>
+        </div>
         {tasks.map((task: Task) => (
           <li
             key={task.id}
             className="border p-4 mb-2 flex justify-between items-center "
           >
-            <div>
-              <Link
-                href={`/tasks/${task.id}`}
-                className="font-bold text-blue-500"
-              >
-                {task.name}
-              </Link>
-              <p>ステータス: {task.status}</p>
-            </div>
             <Link
-              href={`/tasks/${task.id}/edit`}
-              className="bg-yellow-500 text-white px-2 py-1 rounded"
+              href={`/tasks/${task.id}`}
+              className="font-bold text-blue-500"
             >
-              編集
+              {task.name}
             </Link>
+            <p className="">{task.status}</p>
           </li>
         ))}
       </ul>

@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../../../utils/supabase";
-import { Task } from "../../../../../types/task";
+import { Task } from "@/app/types/task";
 
-export default function EditTask({ params }: { params: { id: string } }) {
+export default function EditTask({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = use(params);
   const [task, setTask] = useState<Task | null>(null);
   const router = useRouter();
 
@@ -14,7 +19,7 @@ export default function EditTask({ params }: { params: { id: string } }) {
       const { data, error } = await supabase
         .from("tasks")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", resolvedParams.id)
         .single();
 
       if (error) {
@@ -25,7 +30,7 @@ export default function EditTask({ params }: { params: { id: string } }) {
     };
 
     fetchTask();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +106,7 @@ export default function EditTask({ params }: { params: { id: string } }) {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          更新
+          保存
         </button>
       </form>
     </div>
