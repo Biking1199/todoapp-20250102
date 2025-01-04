@@ -11,7 +11,7 @@ export default function NewTask() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("tasks")
       .insert([{ name, content, status }]);
 
