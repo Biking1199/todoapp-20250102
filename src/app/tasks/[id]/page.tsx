@@ -1,23 +1,62 @@
+"use client";
+import React from "react";
 import { supabase } from "../../../../utils/supabase";
 import Link from "next/link";
+import { Task } from "@/app/types/task";
+import { useEffect, useState } from "react";
 
-export default async function TaskDetail({
+export default function TaskDetail({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { data: task, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("id", params.id)
-    .single();
+  const [task, setTask] = useState<Task | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const resolvedParams = React.use(params);
 
-  if (error) {
-    console.error("Error fetching task:", error);
-    return <div>エラーが発生しました。</div>;
-  }
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("tasks")
+          .select("*")
+          .eq("id", resolvedParams.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching task:", error);
+          setError("タスクの取得中にエラーが発生しました。");
+          setIsLoading(false);
+          return;
+        }
+        setTask(data);
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTask();
+  }, [resolvedParams.id]);
+
+  const handleDelete = async () => {
+    try {
+      const { error } = await supabase
+        .from("tasks")
+        .delete()
+        .eq("id", resolvedParams.id);
+
+      if (error) {
+        console.error("Error deleting task:", error);
+      }
+    } catch (err) {
+      console.error("Unexpected error during delete:", err);
+      setError("予期しないエラーが発生しました。");
+    }
+  };
   if (!task) {
-    return <div>タスクが見つかりません。</div>;
+    return <div>タスクが見つかりませんでした。</div>;
   }
 
   return (
@@ -55,8 +94,10 @@ export default async function TaskDetail({
           >
             編集
           </Link>
+          <button onClick={handleDelete}></button>
           <Link
             href={"/"}
+            onClick={handleDelete}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             削除
