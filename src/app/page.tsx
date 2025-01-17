@@ -57,6 +57,12 @@ export default function Home() {
         >
           サインアップ
         </Link>
+        <Link
+          href="components/signin"
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
+          サインイン
+        </Link>
       </div>
 
       <ul className="mt-4">
