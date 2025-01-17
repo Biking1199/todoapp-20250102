@@ -44,12 +44,21 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">タスク一覧</h1>
-      <Link
-        href="/tasks/create"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        新規タスク作成
-      </Link>
+      <div>
+        <Link
+          href="/tasks/create"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          新規タスク作成
+        </Link>
+        <Link
+          href="/components/signup"
+          className="bg-yellow-500 text-white px-4 py-2 rounded"
+        >
+          サインアップ
+        </Link>
+      </div>
+
       <ul className="mt-4">
         <div className="flex items-center justify-between  mx-auto">
           <label className="block text-gray-700 text-sm font-bold mb-2">

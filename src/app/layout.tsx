@@ -8,11 +8,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <header>
+        <header className="mb-2">
           <h1>Todoアプリ</h1>
         </header>
         <main>{children}</main>
-        <footer>
+        <footer className="mt-2">
           <p>&copy; Hibiki Hangai</p>
         </footer>
       </body>
