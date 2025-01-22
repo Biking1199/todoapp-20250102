@@ -2,23 +2,57 @@
 
 import { useState } from "react";
 import { supabase } from "../../../../utils/supabase";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSignIn = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    if (!email || !password) {
+      setMessage("メールアドレスとパスワードを入力してください。");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("パスワードは６文字以上である必要があります。");
+      return;
+    }
     if (error) {
       setMessage(`ログインエラー：${error.message}`);
     } else {
       setMessage("ログイン成功！");
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setMessage("ユーザー情報の取得に失敗しました。");
+        setIsLoading(false);
+        return;
+      }
+
+      const { data: tasks, error: taskError } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", user.id);
     }
+    setTimeout(() => {
+      router.push("/");
+    }, 2000);
+    setIsLoading(false);
   };
 
   return (
