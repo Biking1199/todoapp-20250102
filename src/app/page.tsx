@@ -4,42 +4,50 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../utils/supabase";
 import Link from "next/link";
 import { Task } from "./types/task";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchTasks();
+    const fetchTasks = async () => {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-    // リアルタイム更新のためのサブスクリプション
-    const subscription = supabase
-      .channel("tasks")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "tasks" },
-        () => {
-          fetchTasks();
-        }
-      )
-      .subscribe();
+      if (sessionError || !session || !session.user) {
+        setMessage("ログインセッションがありません。ログインしてください。");
+        setIsLoading(false);
+        router.replace("/signin");
+        return;
+      }
+      const user = session.user;
 
-    return () => {
-      subscription.unsubscribe();
+      const { data: tasks, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (error) {
+        setMessage("タスクの取得に失敗しました。");
+      } else {
+        setTasks(tasks);
+      }
+      setIsLoading(false);
     };
+    fetchTasks();
   }, []);
-
-  const fetchTasks = async () => {
-    const { data, error } = await supabase
-      .from("tasks")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching tasks:", error);
-    } else {
-      setTasks(data || []);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
