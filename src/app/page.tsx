@@ -22,7 +22,7 @@ export default function Home() {
       if (sessionError || !session || !session.user) {
         setMessage("ログインセッションがありません。ログインしてください。");
         setIsLoading(false);
-        router.replace("/signin");
+        router.replace("/components/signin");
         return;
       }
       const user = session.user;
