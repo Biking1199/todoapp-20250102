@@ -5,6 +5,7 @@ import { supabase } from "../../utils/supabase";
 import Link from "next/link";
 import { Task } from "./types/task";
 import { useRouter } from "next/navigation";
+import SignOutButton from "./components/signout/signout";
 
 export default function Home() {
   const [message, setMessage] = useState("");
@@ -71,6 +72,7 @@ export default function Home() {
         >
           サインイン
         </Link>
+        <SignOutButton />
       </div>
 
       <ul className="mt-4">

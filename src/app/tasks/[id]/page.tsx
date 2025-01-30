@@ -4,6 +4,7 @@ import { supabase } from "../../../../utils/supabase";
 import Link from "next/link";
 import { Task } from "@/app/types/task";
 import { useEffect, useState } from "react";
+import {signout }
 
 export default function TaskDetail({
   params,

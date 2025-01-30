@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../../../../utils/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -58,6 +59,12 @@ export default function SignIn() {
   return (
     <div>
       <h1>ログイン</h1>
+      <Link
+        href="/components/signup"
+        className="bg-yellow-500 text-white px-4 py-2 rounded"
+      >
+        サインアップ
+      </Link>
       <input
         type="email"
         placeholder="メールアドレス"
